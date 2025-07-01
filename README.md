@@ -14,15 +14,16 @@ This repository contains a sample iOS application developed as part of the "Grea
 - Persistence: Uses SwiftData for storing server information.
 - Testing: Includes unit and integration tests for core functionality.
 
-## Features
+## ✨ Features
 
-- Authentication: Sends a POST request to https://playground.nordsec.com/v1/tokens with credentials {"username": "tesonet", "password": "partyanimal"} to obtain a Bearer token.
-- Server Fetching: GET request to https://playground.nordsec.com/v1/servers with Authorization: Bearer <token> header.
-- Error Handling: Manages 401 Unauthorized responses by prompting re-login.
-- Persistence: Stores server data using SwiftData for offline access.
-- Design: Replicated from the Figma design at [https://www.figma.com/file/NEqPdYxCcxnB5b1ByahrXU/Great-task-for-Great-iOS-Developer](https://www.figma.com/file/NEqPdYxCcxnB5b1ByahrXU/Great-task-for-Great-iOS-Developer?node-id=0%3A1) (requires sign-up for editable assets).
-- Animation: Logo on the Login screen features a smooth 25% scale animation that pulses and returns to its original size.
-- Bonus: Credential storage implemented using Keychain for automatic login on app restart.
+- ✅ SwiftUI-based UI
+- ✅ MVVM architecture
+- ✅ Modular project structure
+- ✅ Swift Concurrency (async/await)
+- ✅ Dependency Injection
+- ✅ Unit-tested core services
+- ✅ Biometric authentication (Face ID / Touch ID)
+- ✅ Figma design integration
 
 ## Project Structure
 
@@ -34,6 +35,11 @@ This repository contains a sample iOS application developed as part of the "Grea
 - `Server.swift`: Model class for server data with SwiftData integration.
 - `NetworkManager.swift`: Manages network requests with protocol-based mocking.
 - `Tests`: Contains unit and integration tests for LoginViewModel, ServersViewModel, Server, and NetworkManager.
+
+## 🎨 Design
+
+Design file available on Figma:  
+🔗 [Figma](https://www.figma.com/design/5DVu3HbepBlWVjXDZVo360/Great-task-for-Great-iOS-Developer?node-id=0-1&p=f&t=Ys99qDDR58d8qpdH-0)
 
 ## Setup Instructions
 
@@ -56,11 +62,6 @@ This repository contains a sample iOS application developed as part of the "Grea
 5. Configuration:
    - No additional configuration is required. The app uses hardcoded credentials for the task.
 
-## Testing
-
-Run tests via Xcode:
-- Select Cmd + U or go to Product > Test to execute all test cases.
-- Tests cover authentication, server fetching, sorting, persistence, and error handling.
 
 ## Design Notes
 
