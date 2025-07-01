@@ -24,14 +24,14 @@ class UserAuthServiceTests: XCTestCase {
 
     func testObtainAuthTokenSuccess() async {
         mockNetwork.postResponse = Authorization(token: "successToken")
-        let creds = UserCredentials(username: "user", password: "pass")
+        let creds = UserСredentials(username: "user", password: "pass")
         let auth = try? await authService.obtainAuthToken(forUser: creds)
         XCTAssertEqual(auth?.token, "successToken")
     }
 
     func testObtainAuthTokenFailure() async {
         mockNetwork.errorToThrow = .accessDenied
-        let creds = UserCredentials(username: "user", password: "pass")
+        let creds = UserСredentials(username: "user", password: "pass")
         do {
             _ = try await authService.obtainAuthToken(forUser: creds)
             XCTFail("Should have thrown error")

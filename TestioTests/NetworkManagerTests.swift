@@ -52,7 +52,7 @@ class NetworkManagerTests: XCTestCase {
     func testPostRequestSuccess() async {
         let auth = Authorization(token: "testToken")
         mockNetwork.postResponse = auth
-        let creds = UserCredentials(username: "user", password: "pass")
+        let creds = UserСredentials(username: "user", password: "pass")
         let result = try? await mockNetwork.executePostRequest(atEndpoint: URL(string: "https://test.com")!, withPayload: creds, expecting: Authorization.self, headers: nil)
         XCTAssertEqual(result?.token, "testToken")
     }
@@ -71,7 +71,7 @@ class NetworkManagerTests: XCTestCase {
 
     func testPostRequestFailure() async {
         mockNetwork.errorToThrow = .accessDenied
-        let creds = UserCredentials(username: "user", password: "pass")
+        let creds = UserСredentials(username: "user", password: "pass")
         do {
             _ = try await mockNetwork.executePostRequest(atEndpoint: URL(string: "https://test.com")!, withPayload: creds, expecting: Authorization.self, headers: nil)
             XCTFail("Should have thrown error")

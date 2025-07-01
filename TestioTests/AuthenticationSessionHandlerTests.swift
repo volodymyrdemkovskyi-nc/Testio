@@ -10,15 +10,15 @@ import Combine
 @testable import Testio
 
 class MockKeychainManager: KeychainManagerProtocol {
-    var storedData: [String: String] = [:]
+    var storedData: [KeychainManager.KeychainKey: String] = [:]
     var errorToThrow: KeychainManager.StorageError?
 
-    func storeSecureData(dataEntry: String, withIdentifier: String) throws {
+    func storeSecureData(dataEntry: String, withIdentifier: KeychainManager.KeychainKey) throws {
         if let error = errorToThrow { throw error }
         storedData[withIdentifier] = dataEntry
     }
 
-    func retrieveSecureData(withIdentifier: String) throws -> String {
+    func retrieveSecureData(withIdentifier: KeychainManager.KeychainKey) throws -> String {
         if let error = errorToThrow { throw error }
         if let value = storedData[withIdentifier] {
             return value
@@ -27,7 +27,7 @@ class MockKeychainManager: KeychainManagerProtocol {
         }
     }
 
-    func eraseSecureData(withIdentifier: String) throws {
+    func eraseSecureData(withIdentifier: KeychainManager.KeychainKey) throws {
         if let error = errorToThrow { throw error }
         storedData.removeValue(forKey: withIdentifier)
     }
@@ -51,29 +51,51 @@ class AuthenticationSessionHandlerTests: XCTestCase {
         super.tearDown()
     }
 
-    func testTokenStorage() {
+    // MARK: - Tests for Token Storage
+
+    func testTokenStorage_SuccessfulStorage() {
         authHandler.storeSessionToken(newToken: "testToken")
-        XCTAssertEqual(mockKeychain.storedData["authSessionKey"], "testToken")
+        XCTAssertEqual(try? mockKeychain.retrieveSecureData(withIdentifier: .token), "testToken")
         XCTAssertEqual(authHandler.accessToken, "testToken")
     }
 
-    func testClearSessionToken() {
+    // MARK: - Tests for Clear Session Token
+
+    func testClearSessionToken_SuccessfulClear() {
         authHandler.storeSessionToken(newToken: "testToken")
         authHandler.clearSessionToken()
-        XCTAssertNil(mockKeychain.storedData["authSessionKey"])
+        XCTAssertNil(try? mockKeychain.retrieveSecureData(withIdentifier: .token))
         XCTAssertNil(authHandler.accessToken)
     }
 
-    func testSessionValidityWithToken() {
-        mockKeychain.storedData["authSessionKey"] = "validToken"
+    // MARK: - Tests for Session Validity
+
+    func testSessionValidity_WithValidToken() {
+        mockKeychain.storedData[.token] = "validToken"
         let isValid = authHandler.checkSessionValidity()
         XCTAssertTrue(isValid)
         XCTAssertEqual(authHandler.accessToken, "validToken")
     }
 
-    func testSessionValidityWithoutToken() {
+    func testSessionValidity_WithoutToken() {
         let isValid = authHandler.checkSessionValidity()
         XCTAssertFalse(isValid)
         XCTAssertNil(authHandler.accessToken)
+    }
+
+    func testSessionValidity_WithRetrievalError() {
+        mockKeychain.errorToThrow = .dataNotFound
+        let isValid = authHandler.checkSessionValidity()
+        XCTAssertFalse(isValid)
+        XCTAssertNil(authHandler.accessToken)
+    }
+
+    // MARK: - Edge Cases
+
+    func testAccessToken_AfterMultipleStores() {
+        authHandler.storeSessionToken(newToken: "token1")
+        authHandler.storeSessionToken(newToken: "token2") 
+        XCTAssertEqual(authHandler.accessToken, "token2")
+        XCTAssertEqual(try? mockKeychain.retrieveSecureData(withIdentifier: .token), "token2")
     }
 }

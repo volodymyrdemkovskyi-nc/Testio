@@ -32,7 +32,7 @@ class AuthenticationSessionHandler: AuthenticationSessionProtocol {
 
     func checkSessionValidity() -> Bool {
         do {
-            let retrievedToken = try fetchTokenFromSecureStorage(keyIdentifier: "authSessionKey")
+            let retrievedToken = try fetchTokenFromSecureStorage()
             if retrievedToken.isEmpty {
                 accessToken = nil
                 return false
@@ -48,7 +48,7 @@ class AuthenticationSessionHandler: AuthenticationSessionProtocol {
     func clearSessionToken() {
         accessToken = nil
         do {
-            try eraseTokenFromStorage(keyIdentifier: "authSessionKey")
+            try eraseTokenFromStorage()
         } catch {
             print("Failed to clear token: \(error.localizedDescription)")
         }
@@ -57,7 +57,7 @@ class AuthenticationSessionHandler: AuthenticationSessionProtocol {
     func storeSessionToken(newToken: String) {
         accessToken = newToken
         do {
-            try saveTokenToSecureStorage(authCode: newToken, keyIdentifier: "authSessionKey")
+            try saveTokenToSecureStorage(authCode: newToken)
         } catch {
             print("Failed to store token: \(error.localizedDescription)")
             accessToken = nil
@@ -65,16 +65,16 @@ class AuthenticationSessionHandler: AuthenticationSessionProtocol {
     }
 
     // Private helper methods
-    private func fetchTokenFromSecureStorage(keyIdentifier: String) throws -> String {
-        try keychainManager.retrieveSecureData(withIdentifier: keyIdentifier)
+    private func fetchTokenFromSecureStorage() throws -> String {
+        try keychainManager.retrieveSecureData(withIdentifier: .token)
     }
 
-    private func eraseTokenFromStorage(keyIdentifier: String) throws {
-        try keychainManager.eraseSecureData(withIdentifier: keyIdentifier)
+    private func eraseTokenFromStorage() throws {
+        try keychainManager.eraseSecureData(withIdentifier: .token)
     }
 
-    private func saveTokenToSecureStorage(authCode: String, keyIdentifier: String) throws {
-        try keychainManager.storeSecureData(dataEntry: authCode, withIdentifier: keyIdentifier)
+    private func saveTokenToSecureStorage(authCode: String) throws {
+        try keychainManager.storeSecureData(dataEntry: authCode, withIdentifier: .token)
     }
 
     private func updateAuthenticationStatus() {

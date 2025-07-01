@@ -29,7 +29,7 @@ struct AppConfigurator {
         static let loginSpacing: CGFloat = 40
         static let logoWidth: CGFloat = 186
         static let logoHeight: CGFloat = 48
-        static let logoScaleIncrease: CGFloat = 0.25 
+        static let logoScaleIncrease: CGFloat = 0.25
         static let logoAnimationDuration: Double = 3.0
     }
 
@@ -65,6 +65,12 @@ struct AppConfigurator {
         static let byDistance = "By distance"
         static let alphabetical = "Alphabetical"
         static let cancel = "Cancel"
+        static let biometricAuthenticationTitle = "This allows you to login into Testio using Face ID."
+        static let biometricAuthenticationUnavailable = "Biometric authentication unavailable."
+        static let biometricAuthenticationFailed = "Biometric authentication failed or cancelled."
+        static let saveCredentialsTitle = "Save Credentials?"
+        static let saveCredentialsMessage = "Would you like to save your login and password for future quick biometric authentication?"
+        static let failedToSaveCredentials = "Failed to save credentials."
     }
 
     struct Colors {
@@ -76,7 +82,6 @@ struct AppConfigurator {
     struct Fonts {
         static var basic: Font { .system(size: 17) }
         static var header: Font { .system(size: 17, weight: .heavy) }
-        static var loading: Font { .system(size: 13) } 
+        static var loading: Font { .system(size: 13) }
     }
 }
-

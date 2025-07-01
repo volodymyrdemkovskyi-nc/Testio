@@ -2,21 +2,20 @@
 //  LoginView.swift
 //  Testio
 //
-//  Created by Volodymyr Demkovskyi  on 24/06/2025.
+//  Created by Volodymyr Demkovskyi  on 25/06/2025.
 //
 
 import SwiftUI
 import Combine
 
 struct LoginView: View {
-
     @ObservedObject var viewModel: LoginViewModel
 
     var body: some View {
         ZStack {
             backgroundView
 
-            if viewModel.isLoading {
+            if viewModel.authenticationStatus == .loading {
                 loadListView
             } else {
                 loginFormView
@@ -27,15 +26,41 @@ struct LoginView: View {
             get: { viewModel.alertInfo != nil },
             set: { _ in viewModel.alertInfo = nil }
         )) {
-            Alert(
-                title: Text(viewModel.alertInfo?.title ?? ""),
-                message: Text(viewModel.alertInfo?.message ?? ""),
+            if let alertInfo = viewModel.alertInfo {
+                if alertInfo.type == .withActions {
+                    return Alert(
+                        title: Text(alertInfo.title),
+                        message: Text(alertInfo.message),
+                        primaryButton: .default(Text("Yes")) {
+                            Task {
+                                viewModel.authenticationTrigger.send(.saveBiometricData)
+                            }
+                        },
+                        secondaryButton: .cancel(Text("No")) {
+                            Task {
+                                viewModel.authenticationTrigger.send(.saveToken)
+                            }
+                        }
+                    )
+                } else {
+                    return Alert(
+                        title: Text(alertInfo.title),
+                        message: Text(alertInfo.message),
+                        dismissButton: .default(Text(AppConfigurator.Strings.ok))
+                    )
+                }
+            }
+            return Alert(
+                title: Text("Error"),
+                message: Text("An unexpected error occurred."),
                 dismissButton: .default(Text(AppConfigurator.Strings.ok))
             )
         }
+        .task {
+            viewModel.authenticationTrigger.send(.checkAuthenticationType)
+        }
     }
 }
-
 
 // MARK: - View Components
 fileprivate extension LoginView {

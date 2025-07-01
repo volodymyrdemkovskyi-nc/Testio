@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct LoginFormView: View {
-    @ObservedObject private var loginState: LoginState
+    @ObservedObject private var credentials: UserСredentials
     @ObservedObject private var viewModel: LoginViewModel
     @State private var isTapped: Bool = false 
 
     init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
-        self.loginState = viewModel.loginState
+        self.credentials = viewModel.credentials
     }
 
     var body: some View {
@@ -32,7 +32,7 @@ fileprivate extension LoginFormView {
 
     var usernameField: some View {
         TestioTextField(
-            inputText: $loginState.usernameInput,
+            inputText: $credentials.username,
             inputPlaceholder: AppConfigurator.Strings.username,
             fieldIcon: AppConfigurator.Images.username.image
         )
@@ -41,7 +41,7 @@ fileprivate extension LoginFormView {
 
     var passwordField: some View {
         TestioTextField(
-            inputText: $loginState.passwordInput,
+            inputText: $credentials.password,
             inputPlaceholder: AppConfigurator.Strings.password,
             fieldIcon: AppConfigurator.Images.password.image
         )
@@ -55,10 +55,10 @@ fileprivate extension LoginFormView {
             textColor: .white,
             isTapped: $isTapped
         )
-        .disabled(viewModel.isLoading)
+        .disabled(viewModel.authenticationStatus == .loading)
         .onChange(of: isTapped) {
             if isTapped {
-                loginState.loginTrigger.send()
+                viewModel.authenticationTrigger.send(.validateCredentials)
                 isTapped = false
             }
         }

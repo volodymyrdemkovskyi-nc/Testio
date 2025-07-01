@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 protocol UserAuthServiceProtocol {
-    func obtainAuthToken(forUser: UserCredentials) async throws -> Authorization
+    func obtainAuthToken(forUser: UserСredentials) async throws -> Authorization
 }
 
 class UserAuthService: UserAuthServiceProtocol {
@@ -19,7 +19,7 @@ class UserAuthService: UserAuthServiceProtocol {
         self.networkManager = networkManager
     }
 
-    func obtainAuthToken(forUser: UserCredentials) async throws -> Authorization {
+    func obtainAuthToken(forUser: UserСredentials) async throws -> Authorization {
         guard let accessPoint = AppConfigurator.URLs.Tokens else {
             throw NetworkManager.NetworkError.invalidEndpoint
         }

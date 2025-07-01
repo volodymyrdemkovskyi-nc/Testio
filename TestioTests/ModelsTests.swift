@@ -18,9 +18,10 @@ class ModelsTests: XCTestCase {
     }
 
     func testAlertInfoInitialization() {
-        let alert = AlertInfo(title: "Error", message: "Failed")
+        let alert = AlertInfo(title: "Error", message: "Failed", type: .simple)
         XCTAssertEqual(alert.title, "Error")
         XCTAssertEqual(alert.message, "Failed")
+        XCTAssertEqual(alert.type, .simple)
     }
 
     func testAuthorizationEncodingDecoding() throws {
@@ -33,11 +34,11 @@ class ModelsTests: XCTestCase {
     }
 
     func testUserCredentialsEncodingDecoding() throws {
-        let creds = UserCredentials(username: "user", password: "pass")
+        let creds = UserСredentials(username: "user", password: "pass")
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
         let data = try encoder.encode(creds)
-        let decodedCreds = try decoder.decode(UserCredentials.self, from: data)
+        let decodedCreds = try decoder.decode(UserСredentials.self, from: data)
         XCTAssertEqual(decodedCreds.username, "user")
         XCTAssertEqual(decodedCreds.password, "pass")
     }

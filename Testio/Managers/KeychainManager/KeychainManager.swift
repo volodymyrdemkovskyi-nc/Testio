@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import Security
 
 protocol KeychainManagerProtocol {
-    func storeSecureData(dataEntry: String, withIdentifier: String) throws
-    func retrieveSecureData(withIdentifier: String) throws -> String
-    func eraseSecureData(withIdentifier: String) throws
+    func storeSecureData(dataEntry: String, withIdentifier: KeychainManager.KeychainKey) throws
+    func retrieveSecureData(withIdentifier: KeychainManager.KeychainKey) throws -> String
+    func eraseSecureData(withIdentifier: KeychainManager.KeychainKey) throws
 }
 
 class KeychainManager: KeychainManagerProtocol {
-    private static let storageIdentifier = Bundle.main.bundleIdentifier
+    static let storageIdentifier = Bundle.main.bundleIdentifier ?? "com.testio.app"
 
     enum StorageError: Error, Equatable {
         case dataNotFound
@@ -36,31 +37,37 @@ class KeychainManager: KeychainManagerProtocol {
         }
     }
 
-    func storeSecureData(dataEntry: String, withIdentifier: String) throws {
+    enum KeychainKey: String {
+        case username
+        case password
+        case token
+    }
+
+    func storeSecureData(dataEntry: String, withIdentifier: KeychainKey) throws {
         let encodedData = encodeTextToData(inputText: dataEntry)
-        let storageQuery = buildStorageQuery(uniqueKey: withIdentifier, dataContent: encodedData)
+        let storageQuery = buildStorageQuery(uniqueKey: withIdentifier.rawValue, dataContent: encodedData)
         try executeStorageOperation(query: storageQuery)
     }
 
-    func retrieveSecureData(withIdentifier: String) throws -> String {
-        let retrievalQuery = buildRetrievalQuery(uniqueKey: withIdentifier)
+    func retrieveSecureData(withIdentifier: KeychainKey) throws -> String {
+        let retrievalQuery = buildRetrievalQuery(uniqueKey: withIdentifier.rawValue)
         let retrievedData = try performDataRetrieval(query: retrievalQuery)
         return decodeDataToText(retrievedData: retrievedData)
     }
 
-    func eraseSecureData(withIdentifier: String) throws {
-        let deletionQuery = buildDeletionQuery(uniqueKey: withIdentifier)
+    func eraseSecureData(withIdentifier: KeychainKey) throws {
+        let deletionQuery = buildDeletionQuery(uniqueKey: withIdentifier.rawValue)
         try performDataDeletion(query: deletionQuery)
     }
 
-    // MARK: Private helper methods
+    // MARK: - Private Helper Methods
     private func encodeTextToData(inputText: String) -> Data {
         return inputText.data(using: .utf8) ?? Data()
     }
 
     private func buildStorageQuery(uniqueKey: String, dataContent: Data) -> [String: AnyObject] {
         return [
-            kSecAttrService as String: KeychainManager.storageIdentifier as AnyObject,
+            kSecAttrService as String: (KeychainManager.storageIdentifier as String?) as AnyObject,
             kSecAttrAccount as String: uniqueKey as AnyObject,
             kSecClass as String: kSecClassGenericPassword,
             kSecValueData as String: dataContent as AnyObject
@@ -79,7 +86,7 @@ class KeychainManager: KeychainManagerProtocol {
 
     private func buildRetrievalQuery(uniqueKey: String) -> [String: AnyObject] {
         return [
-            kSecAttrService as String: KeychainManager.storageIdentifier as AnyObject,
+            kSecAttrService as String: (KeychainManager.storageIdentifier as String?) as AnyObject,
             kSecAttrAccount as String: uniqueKey as AnyObject,
             kSecClass as String: kSecClassGenericPassword,
             kSecMatchLimit as String: kSecMatchLimitOne,
@@ -108,7 +115,7 @@ class KeychainManager: KeychainManagerProtocol {
 
     private func buildDeletionQuery(uniqueKey: String) -> [String: AnyObject] {
         return [
-            kSecAttrService as String: KeychainManager.storageIdentifier as AnyObject,
+            kSecAttrService as String: (KeychainManager.storageIdentifier as String?) as AnyObject,
             kSecAttrAccount as String: uniqueKey as AnyObject,
             kSecClass as String: kSecClassGenericPassword
         ]
@@ -116,7 +123,7 @@ class KeychainManager: KeychainManagerProtocol {
 
     private func performDataDeletion(query: [String: AnyObject]) throws {
         let operationResult = SecItemDelete(query as CFDictionary)
-        guard operationResult == errSecSuccess else {
+        guard operationResult == errSecSuccess || operationResult == errSecItemNotFound else {
             throw StorageError.unexpectedOperationResult(operationResult)
         }
     }

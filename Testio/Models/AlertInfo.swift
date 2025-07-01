@@ -6,6 +6,12 @@
 //
 
 struct AlertInfo {
+    enum AlertType {
+        case simple
+        case withActions
+    }
+
     let title: String
     let message: String
+    let type: AlertType 
 }
