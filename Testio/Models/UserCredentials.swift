@@ -9,8 +9,8 @@ import SwiftUI
 import Combine
 
 class UserСredentials: ObservableObject, Codable {
-    @Published var username: String = "" // "tesonet"
-    @Published var password: String = "" // "partyanimal"
+    @Published var username: String 
+    @Published var password: String
 
     init(username: String = "", password: String = "") {
         self.username = username

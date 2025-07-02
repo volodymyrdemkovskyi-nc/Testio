@@ -71,6 +71,9 @@ struct AppConfigurator {
         static let saveCredentialsTitle = "Save Credentials?"
         static let saveCredentialsMessage = "Would you like to save your login and password for future quick biometric authentication?"
         static let failedToSaveCredentials = "Failed to save credentials."
+        static let yes = "Yes"
+        static let no = "No"
+        static let anUnexpectedErrorOccurred = "An unexpected error occurred."
     }
 
     struct Colors {

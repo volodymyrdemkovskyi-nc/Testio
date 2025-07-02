@@ -82,7 +82,7 @@ struct TestioTextField: View {
         // Empty field
         TestioTextField(
             inputText: .constant(""),
-            inputPlaceholder: "Username",
+            inputPlaceholder: AppConfigurator.Strings.username,
             fieldIcon: AppConfigurator.Images.username.image,
             maxWidth: .infinity
         )
@@ -90,7 +90,7 @@ struct TestioTextField: View {
         // Filed field
         TestioTextField(
             inputText: .constant("Volodymyr"),
-            inputPlaceholder: "Username",
+            inputPlaceholder: AppConfigurator.Strings.username,
             fieldIcon: AppConfigurator.Images.username.image,
             maxWidth: .infinity
         )

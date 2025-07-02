@@ -68,14 +68,14 @@ struct TestioButton: View {
     @Previewable @State var isTapped = false
     VStack(spacing: 20) {
         TestioButton(
-            buttonText: "Log in",
+            buttonText: AppConfigurator.Strings.login,
             backgroundColor: AppConfigurator.Colors.primaryButtonColor,
             textColor: .white,
             isTapped: $isTapped
         )
 
         TestioButton(
-            buttonText: "Logout",
+            buttonText: AppConfigurator.Strings.logout,
             trailingIcon: AppConfigurator.Images.logout.image,
             backgroundColor: .white,
             textColor: AppConfigurator.Colors.primaryButtonColor,

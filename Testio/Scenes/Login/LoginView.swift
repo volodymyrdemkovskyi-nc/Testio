@@ -31,12 +31,12 @@ struct LoginView: View {
                     return Alert(
                         title: Text(alertInfo.title),
                         message: Text(alertInfo.message),
-                        primaryButton: .default(Text("Yes")) {
+                        primaryButton: .default(Text(AppConfigurator.Strings.yes)) {
                             Task {
                                 viewModel.authenticationTrigger.send(.saveBiometricData)
                             }
                         },
-                        secondaryButton: .cancel(Text("No")) {
+                        secondaryButton: .cancel(Text(AppConfigurator.Strings.no)) {
                             Task {
                                 viewModel.authenticationTrigger.send(.saveToken)
                             }
@@ -51,8 +51,8 @@ struct LoginView: View {
                 }
             }
             return Alert(
-                title: Text("Error"),
-                message: Text("An unexpected error occurred."),
+                title: Text(AppConfigurator.Strings.errorTitle),
+                message: Text(AppConfigurator.Strings.anUnexpectedErrorOccurred),
                 dismissButton: .default(Text(AppConfigurator.Strings.ok))
             )
         }
